@@ -7,6 +7,7 @@ const Joi = require("joi");
 const bcrypt = require("bcrypt");
 
 // import package here
+const jwt = require('jsonwebtoken')
 
 exports.register = async (req, res) => {
   // our validation schema here
@@ -33,13 +34,12 @@ exports.register = async (req, res) => {
     // we hash password from request with salt
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
+    // code here
     const newUser = await user.create({
       name: req.body.name,
       email: req.body.email,
       password: hashedPassword,
     });
-
-    // code here
 
     res.status(200).send({
       status: "success...",
@@ -97,6 +97,12 @@ exports.login = async (req, res) => {
     }
 
     // code here
+    const dataToken = {
+      id: userExist.id
+    }
+
+    const SECRRET_KEY = process.env.TOKEN_KEY
+    const token = jwt.sign(dataToken, SECRRET_KEY)
 
     res.status(200).send({
       status: "success...",
@@ -104,6 +110,7 @@ exports.login = async (req, res) => {
         name: userExist.name,
         email: userExist.email,
         // code here
+        token
       },
     });
   } catch (error) {

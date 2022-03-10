@@ -1,3 +1,4 @@
+require('dotenv').config()
 // import package here to load environment
 const express = require('express')
 
